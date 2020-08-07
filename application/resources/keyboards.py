@@ -136,11 +136,13 @@ def from_dishes(dishes, language: str) -> ReplyKeyboardMarkup:
 
 def from_cart_items(cart_items, language) -> ReplyKeyboardMarkup:
     cart_items_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    if language == 'uz':
-        names = [cart_item.dish.description_uz for cart_item in cart_items]
-    else:
-        names = [cart_item.dish.description for cart_item in cart_items]
-    names = ['❌ ' + name for name in names]
+    cart_dict = {}
+    counter = 0
+    for cart_item in cart_items:
+        counter += 1
+        cart_dict[counter] = cart_item
+    names = list(cart_dict.keys())
+    names = ['❌ ' + str(name) for name in names]
     cart_items_keyboard.add(*names)
     cart_items_keyboard.add(get_string('go_back', language), get_string('cart.clear', language))
     cart_items_keyboard.add(get_string('catalog.make_order', language))

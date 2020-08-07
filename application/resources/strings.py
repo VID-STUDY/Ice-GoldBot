@@ -112,9 +112,9 @@ def from_order(order: Order, language: str, total: int) -> str:
         counter += 1
         dish = order_item.dish
         if language == 'uz':
-            dish_name = dish.get_full_name_uz()
+            dish_name = dish.description_uz
         else:
-            dish_name = dish.get_full_name()
+            dish_name = dish.description
         order_item_str = order_item_tmpl.format(counter=counter,
                                                 name=dish_name,
                                                 count=order_item.count,
