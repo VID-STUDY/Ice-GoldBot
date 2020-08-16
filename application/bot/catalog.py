@@ -9,7 +9,8 @@ from datetime import datetime
 from datetime import time
 import sys
 import settings
-
+import pytz
+tz = pytz.timezone('Asia/Tashkent')
 
 def check_catalog(message: Message):
     if not message.text:
@@ -197,12 +198,14 @@ def catalog_processor(message: Message, **kwargs):
 @bot.message_handler(content_types=['text'], func=lambda m: botutils.check_auth(m) and check_catalog(m))
 ####################ЗАДАТЬ ВРЕМЯ################################
 def work_hours(message: Message):
-    now = datetime.time(datetime.now())
+    now = datetime.now().time().replace(tzinfo=tz)
     get = settings.get_timelimits()
     morning = get[0]
     night = get[1]
+    morning = datetime.strptime(morning, '%H:%M').time().replace(tzinfo=tz)
+    night = datetime.strptime(night, '%H:%M').time().replace(tzinfo=tz)
     notify = settings.get_timenotify()
-    if str(morning) <= str(now) <= str(night):
+    if now > morning and now < night:
         catalog(message)
     else:
         bot.send_message(message.chat.id, notify)
