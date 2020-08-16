@@ -198,12 +198,12 @@ def catalog_processor(message: Message, **kwargs):
 @bot.message_handler(content_types=['text'], func=lambda m: botutils.check_auth(m) and check_catalog(m))
 ####################ЗАДАТЬ ВРЕМЯ################################
 def work_hours(message: Message):
-    now = datetime.now().time().replace(tzinfo=tz)
+    now = datetime.now(tz).time()
     get = settings.get_timelimits()
     morning = get[0]
     night = get[1]
-    morning = datetime.strptime(morning, '%H:%M').time().replace(tzinfo=tz)
-    night = datetime.strptime(night, '%H:%M').time().replace(tzinfo=tz)
+    morning = datetime.strptime(morning, '%H:%M').time()
+    night = datetime.strptime(night, '%H:%M').time()
     notify = settings.get_timenotify()
     if now > morning and now < night:
         catalog(message)
