@@ -1,4 +1,6 @@
 import shelve
+import string
+
 from config import basedir
 import os
 from typing import Optional, Tuple
@@ -30,6 +32,57 @@ def set_delivery_cost(prices: tuple):
     settings.close()
 
 
+##############TIME##################
+
+def get_timelimits() -> tuple:
+    """
+    Time limits
+    :return: (start, end)
+    """
+    settings = shelve.open(filename)
+    if 'timelimits' not in settings:
+        settings['timelimits'] = ['08:00', '21:00']
+    value = settings['timelimits']
+    settings.close()
+    return value
+
+
+
+def set_timelimits(times: tuple):
+    """
+
+    """
+    settings = shelve.open(filename)
+    settings['timelimits'] = times
+    settings.close()
+
+###########NOTIFICATION############
+
+def get_timenotify():
+    """
+    Time notification)
+    """
+    settings = shelve.open(filename)
+    if 'timenotify' not in settings:
+        settings['timenotify'] = ('Mы закрыты. Работаем с ...  до ...')
+    value = settings['timenotify']
+    settings.close()
+    return value
+
+
+def set_timenotify(notify):
+    """
+
+    """
+    settings = shelve.open(filename)
+    settings['timenotify'] = notify
+    settings.close()
+#########################
+
+
+
+
+
 def get_cafe_coordinates() -> Optional[Tuple[float, float]]:
     """
     Cafe coordinates
@@ -37,7 +90,7 @@ def get_cafe_coordinates() -> Optional[Tuple[float, float]]:
     """
     settings = shelve.open(filename)
     if 'cafe_coordinates' not in settings:
-        return None
+        settings['cafe_coordinates'] = (41.2646500, 69.2162700)
     value = settings['cafe_coordinates']
     settings.close()
     return value

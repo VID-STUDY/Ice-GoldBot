@@ -131,6 +131,29 @@ class CafeLocationForm(FlaskForm):
         self.longitude.data = coordinates[1]
 
 
+class TimeSet(FlaskForm):
+    start = StringField('Время от', validators=[DataRequired("Укажите начало работы")])
+    end = StringField('Время до', validators=[DataRequired('Укажите конец работы')])
+    notification = StringField('Введите текст уведомления', validators=[DataRequired("текст уведомления")])
+    submit = SubmitField('Задать')
+
+    def fill_from_settings(self):
+        times = settings.get_timelimits()
+        notify = settings.get_timenotify()
+        self.notification.data = notify
+        self.start.data = times[0]
+        self.end.data = times[1]
+
+    def validate_int_value(self, field):
+        value = field.data
+
+    def validate_start(self, field):
+        self.validate_int_value(field)
+
+    def validate_end(self, field):
+        self.validate_int_value(field)
+
+
 class UserForm(FlaskForm):
     name = StringField('Имя пользователя', validators=[DataRequired("Укажите имя пользователя")])
     phone_number = StringField('Номер телефона', validators=[DataRequired("Укажите номер телефона")])

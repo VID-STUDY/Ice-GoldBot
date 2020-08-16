@@ -1,7 +1,7 @@
 from . import bp
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required
-from .forms import DeliveryPriceForm, CafeLocationForm
+from .forms import DeliveryPriceForm, CafeLocationForm, TimeSet
 import settings as app_settings
 
 
@@ -10,11 +10,40 @@ import settings as app_settings
 def settings():
     delivery_cost_form = DeliveryPriceForm()
     location_form = CafeLocationForm()
+    time_form = TimeSet()
+    delivery_cost_form.fill_from_settings()
+    location_form.fill_from_settings()
+    time_form.fill_from_settings()
+    return render_template('admin/settings.html', title='Настройки', area='settings',
+                           cost_form=delivery_cost_form,
+                           location_form=location_form,
+                           time_form = time_form
+                           )
+
+############TIME#########
+@bp.route('/settings/time', methods=['POST'])
+@login_required
+def set_times():
+    time_form = TimeSet()
+    if time_form.validate_on_submit():
+        start = time_form.start.data
+        end = time_form.end.data
+        notify = time_form.notification.data
+        app_settings.set_timelimits((start, end))
+        app_settings.set_timenotify(notify)
+        flash('Задано время работы', category='success')
+        return redirect(url_for('admin.settings'))
+    delivery_cost_form = DeliveryPriceForm()
+    location_form = CafeLocationForm()
     delivery_cost_form.fill_from_settings()
     location_form.fill_from_settings()
     return render_template('admin/settings.html', title='Настройки', area='settings',
                            cost_form=delivery_cost_form,
-                           location_form=location_form)
+                           location_form=location_form,
+                           time_form=time_form)
+
+#########################
+
 
 
 @bp.route('/settings/location', methods=['POST'])
@@ -31,7 +60,8 @@ def set_location():
     delivery_cost_form.fill_from_settings()
     return render_template('admin/settings.html', title='Настройки', area='settings',
                            cost_form=delivery_cost_form,
-                           location_form=location_form)
+                           location_form=location_form,
+                           time_form = time_form)
 
 
 @bp.route('/settings/delivery-cost', methods=['POST'])
@@ -51,4 +81,9 @@ def set_delivery_cost():
     location_form.fill_from_settings()
     return render_template('admin/settings.html', title='Настройки', area='settings',
                            cost_form=delivery_cost_form,
-                           location_form=location_form)
+                           location_form=location_form,
+                           time_form = time_form)
+
+
+
+
