@@ -22,6 +22,10 @@ login.login_message_category = 'warning'
 import application.core.models as models
 
 
+
+
+
+
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db,

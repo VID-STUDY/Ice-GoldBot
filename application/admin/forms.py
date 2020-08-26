@@ -8,6 +8,8 @@ import settings
 from flask_login import current_user
 
 
+#Форма создания категории
+#Create category form
 class CategoryForm(FlaskForm):
     name_ru = StringField('Название на русском', validators=[DataRequired('Укажите название категории на русском')])
     name_uz = StringField('Название на узбекском', validators=[DataRequired('Укажите название категории на узбексокм')])
@@ -16,6 +18,7 @@ class CategoryForm(FlaskForm):
                                               message='Разрешены только изображения форматов .jpg, .png')])
     parent = SelectField('Родительская категория', coerce=int)
     submit = SubmitField('Сохранить')
+
     def fill_from_object(self, category: DishCategory):
         self.name_ru.data = category.name
         self.name_uz.data = category.name_uz
@@ -23,6 +26,8 @@ class CategoryForm(FlaskForm):
             self.parent.data = category.parent_id
 
 
+#Форма создания товара
+#Create dish form
 class DishForm(FlaskForm):
     name_ru = StringField('Название на русском', validators=[DataRequired('Укажите название блюда на русском')])
     name_uz = StringField('Название на узбекском', validators=[DataRequired('Укажите название блюда на узбексокм')])
@@ -55,6 +60,8 @@ class DishForm(FlaskForm):
             raise ValidationError('Цена не может быть отрицательной или равной нулю')
 
 
+#Форма смены пароля администратора
+#Administrator password change form
 class AdministratorEmailForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired('Укажите e-mail')])
     password = PasswordField('Пароль', validators=[DataRequired('Для смены e-mail необходима аутентификация')])
@@ -68,6 +75,8 @@ class AdministratorEmailForm(FlaskForm):
             raise ValidationError('Указан неверный пароль')
 
 
+#Форма смены пароля администратора
+#Administrator password change form
 class AdministratorPasswordForm(FlaskForm):
     current_password = PasswordField('Текущий пароль',
                                      validators=[DataRequired('Для смены пароля укажите текущий пароль')])
@@ -76,12 +85,13 @@ class AdministratorPasswordForm(FlaskForm):
                                           validators=[EqualTo('new_password', 'Пароли должны совпадать')])
     submit = SubmitField('Изменить')
 
-
     def validate_password(self, field):
         if not current_user.check_password(field.data):
             raise ValidationError('Указан неверный пароль')
 
 
+#Форма настройки цен на доставку
+#Form for setting up delivery prices
 class DeliveryPriceForm(FlaskForm):
     first_3_km = StringField('Стоимость за первые три киллометра',
                              validators=[DataRequired('Укажите стоимость первых трёх километров')])
@@ -106,13 +116,13 @@ class DeliveryPriceForm(FlaskForm):
         self.others_km.data = delivery_cost[1]
         self.limit_price.data = settings.get_limit_delivery_price()
         self.currency_value.data = settings.get_currency_value()
-    
+
     def validate_first_3_km(self, field):
         self.validate_int_value(field)
-    
+
     def validate_others_km(self, field):
         self.validate_int_value(field)
-    
+
     def validate_limit_price(self, field):
         self.validate_int_value(field)
 
@@ -120,6 +130,8 @@ class DeliveryPriceForm(FlaskForm):
         self.validate_int_value(field)
 
 
+#Форма установки локации магазина
+#Form for setting the store's location
 class CafeLocationForm(FlaskForm):
     latitude = FloatField('Широта', validators=[DataRequired("Укажите широту")])
     longitude = FloatField('Долгота', validators=[DataRequired('Укажите долготу')])
@@ -131,10 +143,12 @@ class CafeLocationForm(FlaskForm):
         self.longitude.data = coordinates[1]
 
 
+#Форма установки рабочего времени
+#Working time setting form
 class TimeSet(FlaskForm):
-    start = StringField('Время от', validators=[DataRequired("Укажите начало работы")])
-    end = StringField('Время до', validators=[DataRequired('Укажите конец работы')])
-    notification = StringField('Введите текст уведомления', validators=[DataRequired("текст уведомления")])
+    start = StringField('Время от', validators=[DataRequired("Укажите время начала работы")])
+    end = StringField('Время до', validators=[DataRequired('Укажите время конца работы')])
+    notification = StringField('Введите текст уведомления', validators=[DataRequired("Укажите текст уведомления")])
     submit = SubmitField('Задать')
 
     def fill_from_settings(self):
@@ -154,6 +168,8 @@ class TimeSet(FlaskForm):
         self.validate_int_value(field)
 
 
+#Форма создания нового пользователя
+#Adding new user form
 class UserForm(FlaskForm):
     name = StringField('Имя пользователя', validators=[DataRequired("Укажите имя пользователя")])
     phone_number = StringField('Номер телефона', validators=[DataRequired("Укажите номер телефона")])
@@ -162,3 +178,18 @@ class UserForm(FlaskForm):
     def fill_from_object(self, user: User):
         self.name.data = user.full_user_name
         self.phone_number = user.phone_number
+
+
+#Форма рассылки
+#Mailing form
+class MailForm(FlaskForm):
+    mail = StringField('Текст рассылки', validators=[DataRequired("Введите текст рассылки")])
+    image = FileField('Изображение',
+                      validators=[FileAllowed(['png', 'jpg'],
+                                              message='Разрешены только изображения форматов .jpg, .png')])
+
+    submit = SubmitField('Разослать')
+
+
+
+
