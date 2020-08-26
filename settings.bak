@@ -1,6 +1,0 @@
-'delivery_cost', (0, 12)
-'limit_delivery_price', (512, 6)
-'currency_value', (1024, 6)
-'cafe_coordinates', (1536, 24)
-'timelimits', (2048, 30)
-'timenotify', (2560, 63)
